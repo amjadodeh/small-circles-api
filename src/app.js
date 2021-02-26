@@ -6,6 +6,7 @@ const helmet = require('helmet');
 const { NODE_ENV, CLIENT_ORIGIN } = require('./config');
 const usersRouter = require('./users/users-router');
 const postsRouter = require('./posts/posts-router');
+const friendRequestsRouter = require('./friendRequests/friendRequests-router');
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use(
 
 app.use('/api/users', usersRouter);
 app.use('/api/posts', postsRouter);
+app.use('/api/friendRequests', friendRequestsRouter);
 
 app.get('/', (req, res) => {
   res.send('Hello, world!');
