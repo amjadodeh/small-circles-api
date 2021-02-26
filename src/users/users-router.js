@@ -119,14 +119,14 @@ usersRouter
   })
   .patch(jsonParser, (req, res, next) => {
     // not yet fully implemented on client-side
-    const { username, profile_picture, password } = req.body;
-    const userToUpdate = { username, profile_picture, password };
+    const { username, profile_picture, friends, password } = req.body;
+    const userToUpdate = { username, profile_picture, friends, password };
 
     const numberOfValues = Object.values(userToUpdate).filter(Boolean).length;
     if (numberOfValues === 0)
       return res.status(400).json({
         error: {
-          message: `Request body must contain either 'username', 'profile_picture', or 'password'`,
+          message: `Request body must contain either 'username', 'profile_picture', 'friends', or 'password'`,
         },
       });
 

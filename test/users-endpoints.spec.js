@@ -242,7 +242,7 @@ describe(`PATCH /api/users/:userId`, () => {
         .send({ irrelevantField: 'foo' })
         .expect(400, {
           error: {
-            message: `Request body must contain either 'username', 'profile_picture', or 'password'`,
+            message: `Request body must contain either 'username', 'profile_picture', 'friends', or 'password'`,
           },
         });
     });
