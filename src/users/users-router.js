@@ -123,12 +123,17 @@ usersRouter
     const userToUpdate = { username, profile_picture, friends, password };
 
     const numberOfValues = Object.values(userToUpdate).filter(Boolean).length;
-    if (numberOfValues === 0)
+    if (numberOfValues === 0 && friends !== '') {
       return res.status(400).json({
         error: {
           message: `Request body must contain either 'username', 'profile_picture', 'friends', or 'password'`,
         },
       });
+    }
+
+    if (userToUpdate.friends === '') {
+      userToUpdate.friends = null;
+    }
 
     UsersService.updateUser(req.app.get('db'), req.params.userId, userToUpdate)
       .then((numRowsAffected) => {
