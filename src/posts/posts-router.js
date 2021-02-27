@@ -25,14 +25,18 @@ postsRouter
   })
   .post(jsonParser, (req, res, next) => {
     const { content, private, user_id } = req.body;
-    const newPost = { content, private, user_id };
+    const newPost = { content, ...(private && { private }), user_id };
 
-    for (const [key, value] of Object.entries(newPost)) {
-      if (value == null) {
-        return res.status(400).json({
-          error: { message: `Missing '${key}' in request body` },
-        });
-      }
+    if (!content) {
+      return res.status(400).json({
+        error: { message: `Missing 'content' in request body` },
+      });
+    }
+
+    if (!user_id) {
+      return res.status(400).json({
+        error: { message: `Missing 'user_id' in request body` },
+      });
     }
 
     PostsService.insertPost(req.app.get('db'), newPost)

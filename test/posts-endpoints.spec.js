@@ -96,7 +96,6 @@ describe(`POST /api/posts`, () => {
   it(`creates an post, responding with 201 and the new post`, () => {
     const newPost = {
       content: 'Hello from a new post!',
-      private: '1,2',
       user_id: 1,
     };
 
@@ -106,7 +105,6 @@ describe(`POST /api/posts`, () => {
       .expect(201)
       .expect((res) => {
         expect(res.body.content).to.eql(newPost.content);
-        expect(res.body.private).to.eql(newPost.private);
         expect(res.body.user_id).to.eql(newPost.user_id);
         expect(res.body).to.have.property('id');
         expect(res.headers.location).to.eql(`/api/posts/${res.body.id}`);
@@ -116,12 +114,11 @@ describe(`POST /api/posts`, () => {
       );
   });
 
-  const requiredFields = ['content', 'private', 'user_id'];
+  const requiredFields = ['content', 'user_id'];
 
   requiredFields.forEach((field) => {
     const newPost = {
       content: 'New Post',
-      private: '1,2',
       user_id: 1,
     };
 
