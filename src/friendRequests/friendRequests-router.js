@@ -8,6 +8,7 @@ const friendRequestsRouter = express.Router();
 const jsonParser = express.json();
 
 const serializeFriendRequest = (friendRequest) => ({
+  id: Number(friendRequest.id),
   from: Number(friendRequest.user_id_from),
   to: Number(friendRequest.user_id_to),
   status: friendRequest.request_status,
@@ -55,20 +56,15 @@ friendRequestsRouter
   });
 
 friendRequestsRouter
-  .route('/:friendRequestIds')
+  .route('/:friendRequestId')
   .all((req, res, next) => {
-    const user_id_from = Number(req.params.friendRequestIds.split('-')[0]);
-    const user_id_to = Number(req.params.friendRequestIds.split('-')[1]);
-
-    FriendRequestsService.getById(req.app.get('db'), user_id_from, user_id_to)
+    FriendRequestsService.getById(req.app.get('db'), req.params.friendRequestId)
       .then((friendRequest) => {
         if (!friendRequest) {
           return res.status(404).json({
             error: { message: `Friend request doesn't exist` },
           });
         }
-        res.user_id_from = user_id_from;
-        res.user_id_to = user_id_to;
         res.friendRequest = friendRequest;
         next();
       })
@@ -80,8 +76,7 @@ friendRequestsRouter
   .delete((req, res, next) => {
     FriendRequestsService.deleteFriendRequest(
       req.app.get('db'),
-      res.user_id_from,
-      res.user_id_to
+      req.params.friendRequestId
     )
       .then((numRowsAffected) => {
         res.status(204).end();
@@ -102,8 +97,7 @@ friendRequestsRouter
 
     FriendRequestsService.updateFriendRequest(
       req.app.get('db'),
-      res.user_id_from,
-      res.user_id_to,
+      req.params.friendRequestId,
       friendRequestToUpdate
     )
       .then((numRowsAffected) => {

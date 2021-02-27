@@ -43,11 +43,13 @@ describe(`GET /api/friendRequests`, () => {
         .get('/api/friendRequests')
         .expect(200, [
           {
+            id: 1,
             from: 2,
             to: 4,
             status: 'Pending',
           },
           {
+            id: 2,
             from: 4,
             to: 1,
             status: 'Pending',
@@ -60,7 +62,7 @@ describe(`GET /api/friendRequests`, () => {
 describe(`GET /api/friendRequests/:friendRequest_id`, () => {
   context(`Given no friendRequests`, () => {
     it(`responds with 404`, () => {
-      const friendRequestId = '123-456';
+      const friendRequestId = 1234;
       return supertest(app)
         .get(`/api/friendRequests/${friendRequestId}`)
         .expect(404, { error: { message: `Friend request doesn't exist` } });
@@ -80,8 +82,9 @@ describe(`GET /api/friendRequests/:friendRequest_id`, () => {
     });
 
     it('responds with 200 and the specified friendRequest', () => {
-      const friendRequestId = '4-1';
+      const friendRequestId = 2;
       const expectedFriendRequest = {
+        id: 2,
         from: 4,
         to: 1,
         status: 'Pending',
@@ -118,13 +121,12 @@ describe(`POST /api/friendRequests`, () => {
       .expect((res) => {
         expect(res.body.from).to.eql(newFriendRequest.user_id_from);
         expect(res.body.to).to.eql(newFriendRequest.user_id_to);
+        expect(res.body).to.have.property('id');
         expect(res.body).to.have.property('status');
       })
       .then((friendRequestRes) =>
         supertest(app)
-          .get(
-            `/api/friendRequests/${friendRequestRes.body.from}-${friendRequestRes.body.to}`
-          )
+          .get(`/api/friendRequests/${friendRequestRes.body.id}`)
           .expect(friendRequestRes.body)
       );
   });
@@ -153,7 +155,7 @@ describe(`POST /api/friendRequests`, () => {
 describe(`PATCH /api/friendRequests/:friendRequest_id`, () => {
   context(`Given no friendRequests`, () => {
     it(`responds with 404`, () => {
-      const friendRequestId = '123-456';
+      const friendRequestId = 1234;
       return supertest(app)
         .patch(`/api/friendRequests/${friendRequestId}`)
         .expect(404, { error: { message: `Friend request doesn't exist` } });
@@ -173,7 +175,7 @@ describe(`PATCH /api/friendRequests/:friendRequest_id`, () => {
     });
 
     it(`responds with 400 when no required fields supplied`, () => {
-      const idToUpdate = '4-1';
+      const idToUpdate = 2;
       return supertest(app)
         .patch(`/api/friendRequests/${idToUpdate}`)
         .send({ irrelevantField: 'foo' })
@@ -185,11 +187,12 @@ describe(`PATCH /api/friendRequests/:friendRequest_id`, () => {
     });
 
     it(`responds with 204 when updating only a subset of fields`, () => {
-      const idToUpdate = '4-1';
+      const idToUpdate = 2;
       const updateFriendRequest = {
         request_status: 'Accepted',
       };
       const expectedFriendRequest = {
+        id: 2,
         from: 4,
         to: 1,
         status: 'Accepted',
@@ -214,7 +217,7 @@ describe(`PATCH /api/friendRequests/:friendRequest_id`, () => {
 describe(`DELETE /api/friendRequests/:friendRequest_id`, () => {
   context(`Given no friendRequests`, () => {
     it(`responds with 404`, () => {
-      const friendRequestId = '123-456';
+      const friendRequestId = 1234;
       return supertest(app)
         .delete(`/api/friendRequests/${friendRequestId}`)
         .expect(404, { error: { message: `Friend request doesn't exist` } });
@@ -234,11 +237,12 @@ describe(`DELETE /api/friendRequests/:friendRequest_id`, () => {
     });
 
     it('responds with 204 and removes the friendRequest', () => {
-      const idToRemove = '2-4';
+      const idToRemove = 2;
       const expectedFriendRequests = [
         {
-          from: 4,
-          to: 1,
+          id: 1,
+          from: 2,
+          to: 4,
           status: 'Pending',
         },
       ];

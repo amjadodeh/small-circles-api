@@ -13,27 +13,16 @@ const FriendRequestsService = {
       });
   },
 
-  getById(knex, user_id_from, user_id_to) {
-    return knex
-      .from('friend_requests')
-      .select('*')
-      .where('user_id_from', user_id_from)
-      .orWhere('user_id_to', user_id_to)
-      .first();
+  getById(knex, id) {
+    return knex.from('friend_requests').select('*').where('id', id).first();
   },
 
-  deleteFriendRequest(knex, user_id_from, user_id_to) {
-    return knex('friend_requests')
-      .where({ user_id_from })
-      .andWhere({ user_id_to })
-      .delete();
+  deleteFriendRequest(knex, id) {
+    return knex('friend_requests').where({ id }).delete();
   },
 
-  updateFriendRequest(knex, user_id_from, user_id_to, newFriendRequestFields) {
-    return knex('friend_requests')
-      .where({ user_id_from })
-      .andWhere({ user_id_to })
-      .update(newFriendRequestFields);
+  updateFriendRequest(knex, id, newFriendRequestFields) {
+    return knex('friend_requests').where({ id }).update(newFriendRequestFields);
   },
 };
 
