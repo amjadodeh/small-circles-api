@@ -111,6 +111,26 @@ usersRouter
     res.json(serializeUser(res.user));
   })
   .delete((req, res, next) => {
+    const userFriends = serializeUser(res.user)
+      .friends.split(',')
+      .map((NaN) => Number(NaN));
+
+    for (userFriendId of userFriends) {
+      UsersService.getById(req.app.get('db'), userFriendId).then((friend) => {
+        const newFriends = friend.friends
+          .split(',')
+          .map((NaN) => Number(NaN))
+          .filter((friendId) => friendId !== Number(req.params.userId))
+          .toString();
+
+        UsersService.deleteUserFromFriendList(
+          req.app.get('db'),
+          userFriendId,
+          newFriends
+        );
+      });
+    }
+
     UsersService.deleteUser(req.app.get('db'), req.params.userId)
       .then((numRowsAffected) => {
         res.status(204).end();
