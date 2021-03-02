@@ -115,27 +115,31 @@ usersRouter
       .friends.split(',')
       .map((NaN) => Number(NaN));
 
-    for (userFriendId of userFriends) {
+    userFriends.forEach((userFriendId, i) => {
       UsersService.getById(req.app.get('db'), userFriendId).then((friend) => {
-        const newFriends = friend.friends
-          .split(',')
-          .map((NaN) => Number(NaN))
-          .filter((friendId) => friendId !== Number(req.params.userId))
-          .toString();
+        const newFriends = {
+          friends: friend.friends
+            .split(',')
+            .map((NaN) => Number(NaN))
+            .filter((friendId) => friendId !== Number(req.params.userId))
+            .toString(),
+        };
 
-        UsersService.deleteUserFromFriendList(
+        UsersService.updateUser(
           req.app.get('db'),
           userFriendId,
           newFriends
-        );
+        ).then(() => {
+          if (i + 1 === userFriends.length) {
+            UsersService.deleteUser(req.app.get('db'), req.params.userId)
+              .then((numRowsAffected) => {
+                res.status(204).end();
+              })
+              .catch(next);
+          }
+        });
       });
-    }
-
-    UsersService.deleteUser(req.app.get('db'), req.params.userId)
-      .then((numRowsAffected) => {
-        res.status(204).end();
-      })
-      .catch(next);
+    });
   })
   .patch(jsonParser, (req, res, next) => {
     // not yet fully implemented on client-side

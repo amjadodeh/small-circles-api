@@ -295,25 +295,25 @@ describe(`DELETE /api/users/:userId`, () => {
       const idToRemove = 2;
       const expectedUsers = [
         {
+          id: 4,
+          username: 'User4',
+          profile_picture:
+            'https://images.pexels.com/photos/772478/pexels-photo-772478.jpeg',
+          friends: null,
+        },
+        {
           id: 1,
           username: 'User1',
           profile_picture:
             'https://images.pexels.com/photos/772478/pexels-photo-772478.jpeg',
-          friends: '2,3',
+          friends: '3',
         },
         {
           id: 3,
           username: 'User3',
           profile_picture:
             'https://images.pexels.com/photos/772478/pexels-photo-772478.jpeg',
-          friends: '1,2',
-        },
-        {
-          id: 4,
-          username: 'User4',
-          profile_picture:
-            'https://images.pexels.com/photos/772478/pexels-photo-772478.jpeg',
-          friends: null,
+          friends: '1',
         },
       ];
       return supertest(app)

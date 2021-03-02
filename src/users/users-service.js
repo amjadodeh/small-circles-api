@@ -17,10 +17,6 @@ const UsersService = {
     return knex.from('users').select('*').where('id', id).first();
   },
 
-  deleteUserFromFriendList(knex, id, newFriends) {
-    return knex('users').where({ id }).update({ friends: newFriends });
-  },
-
   deleteUser(knex, id) {
     return knex('users').where({ id }).delete();
   },
