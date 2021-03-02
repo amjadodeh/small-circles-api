@@ -1,26 +1,90 @@
-# Express Boilerplate!
+# Small Circles API
 
-This is a boilerplate project used for starting new projects!
+Small Circles is a social platform focused on giving you control of your data.
+
+This is the backend for Small Circles. The live app can be found at [https://small-circles-client.vercel.app](https://small-circles-client.vercel.app)
+
+The front end client can be found at [https://github.com/amjadodeh/small-circles-client](https://github.com/amjadodeh/small-circles-client).
+
+## Introduction
+
+With Small Circles, your data is your data. With every post, you decide who can see your content. You can make a private post that only you can see, a post to be seen by all your friends, or select from your friend list to share to. You can even send direct messages to your friends!
+
+## Documentation
+
+### Endpoints
+
+- `/users`
+  - GET all users, returns an id, username, profile_picture, and friends for the each user
+  - POST new user, request must contain username and password
+- `/users/:userId`
+  - All requests must contain a user id in place of ':userId'
+  - GET user, returns users id, username, profile_picture, and friends
+  - DELETE user, returns status code
+  - PATCH user, request must contain either username, profile_picture, friends, or password
+- `/users/login/:userId`
+  - POST handles user verification for logging in
+- `/posts`
+  - GET all posts, returns an id, content, private, and user_id for the each
+  - POST new post, request must contain content and user_id
+- `/posts/:postId`
+  - All requests contain a posts id in place of ':postId'
+  - GET a post, returns posts id, content, private, and user_id
+  - DELETE a post, returns status code
+  - PATCH a post, request must contain either content or private
+- `/friendRequests`
+  - GET all friend requests, returns an id, from, to, and status for the each
+  - POST new friend request, request must contain user_id_from and user_id_to
+- `/friendRequests/:friendRequestId`
+  - All requests contain a friend request id in place of ':friendRequestId'
+  - GET a friend request, returns friend request id, from, to, and status
+  - DELETE a friend request, returns status code
+  - PATCH a friend request, request must contain request_status
+
+## Technology
+
+#### Back End
+
+- Node and Express
+  - RESTful Api
+- Testing
+  - Supertest (integration)
+  - Mocha and Chai (unit)
+- Database
+  - Postgres
+  - Knex.js - SQL query builder
+
+#### Production
+
+Deployed via Heroku
 
 ## Set up
 
-Complete the following steps to start a new project (NEW-PROJECT-NAME):
+Major dependencies for this repo include Postgres and Node.
 
-1. Clone this repository to your local machine `git clone BOILERPLATE-URL NEW-PROJECTS-NAME`
-2. `cd` into the cloned repository
-3. Make a fresh start of the git history for this project with `rm -rf .git && git init`
-4. Install the node dependencies `npm install`
-5. Move the example Environment file to `.env` that will be ignored by git and read by the express server `mv example.env .env`
-6. Edit the contents of the `package.json` to use NEW-PROJECT-NAME instead of `"name": "express-boilerplate",`
+To get setup locally, do the following:
 
-## Scripts
+1. Clone this repository to your machine, `cd` into the directory and run `npm install`
 
-Start the application `npm start`
+2. Create the small-circles and small-circles-test databases
 
-Start nodemon for the application `npm run dev`
+3. Create a `.env` file in the project root
 
-Run the tests `npm test`
+Inside these files you'll need the following:
 
-## Deploying
+```
+NODE_ENV=development
+PORT=8000
+DATABASE_URL="postgresql://postgres@localhost/small-circles"
+TEST_DATABASE_URL="postgresql://postgres@localhost/small-circles-test"
+CLIENT_ORIGIN=<your-site-here>
 
-When your new project is ready for deployment, add a new Heroku application with `heroku create`. This will make a new git remote called "heroku" and you can then `npm run deploy` which will push to this remote's main branch.
+```
+
+4. Run the migrations for small-circles - `npm run migrate`
+
+5. Run the migrations for small-circles-test - `npm run migrate:test`
+
+6. Run the tests - `npm t`
+
+7. Start the app - `npm run dev`
